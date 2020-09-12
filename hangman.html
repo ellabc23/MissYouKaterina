@@ -71,7 +71,7 @@ var word = getRandomWord();
 
 var remainingLetters = word.length;
 
-function draw(pathFromX, pathFromY, pathToX, pathToY){
+function draw(pathFromX, pathFromY, pathToX, pathToY) {
   stickman = document.getElementById("stickman");
   context = stickman.getContext("2d");
   context.moveTo(pathFromX, pathFromY);
@@ -79,38 +79,48 @@ function draw(pathFromX, pathFromY, pathToX, pathToY){
   context.stroke(); 
 }
 
-function getRandomWord(){
+function getRandomWord() {
   return words[Math.floor(Math.random() * words.length)];
 }
 
-function createAnswerArray(){
-  for(var i = 0; i< word.length; i++){
+function createAnswerArray() {
+  for (var i = 0; i < word.length; i++) {
     answerArray[i] = "_";
   }
 }
 
-function updateUI() {
-  //update guesses
-  document.getElementById("guesses").innerHTML = answerArray.join(" ");
+function updateStickman() {
+  for (var l = drawArray.length - 1; l >= lives; l--) {
+    drawArray[l]();
+  }
 }
 
-function makeGuess(){
-  if(remainingLetters > 0 && lives > 0){
+function updateUI() {
+  // update guesses
+  document.getElementById("guesses").innerHTML = answerArray.join(" ");
+
+  // update stickman
+  updateStickman();
+}
+
+function makeGuess() {
+  if (remainingLetters > 0 && lives > 0) {
     var guessIsCorrect = false;
-      var guessElement = document.getElementById("guess");
+    var guessElement = document.getElementById("guess");
     var guess = guessElement.value;
-    
-    if(guess && guess.length == 1){
-      for (var j = 0; j< word.length; j++){
-        if(word[j] === guess){
-          //update the answer array
+    guessElement.value = "";
+    if (guess && guess.length == 1) {
+      for (var j = 0; j < word.length; j++) {
+        if (word[j] === guess) {
+          // update the answer array
           answerArray[j] = guess;
           
           // set the flag true
           guessIsCorrect = true;
-          
+
           // update the remainingLetters
           remainingLetters--;
+
           
           //you win!!!
           if(remainingLetters === 0){
@@ -137,4 +147,13 @@ updateUI();
 //run the game
 createAnswerArray();
 updateUI();
-</script>
+document.onkeydown = function(e) {
+  switch (e.keyCode) {
+
+    case 82:
+      if(e.shiftKey) {
+        document.location.reload();
+      }
+    break;
+  }
+};
